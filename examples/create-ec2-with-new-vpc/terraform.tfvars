@@ -19,8 +19,8 @@
 ################################################
 vpc_cidr             = "10.0.0.0/16"                # CIDR block for the VPC
 vpc_name             = "cisco_ise"                  # Name tag for the VPC
-aws_region           = "us-east-1"                  # Specify the AWS region
-availability_zones   = ["us-east-1a", "us-east-1b"] # List of availability zones
+aws_region           = "eu-central-1"                  # Specify the AWS region
+availability_zones   = ["eu-central-1a", "eu-central-1b"] # List of availability zones
 enable_dns_hostnames = true                         # Whether to enable DNS hostnames for instances in the VPC. Allowed values are 'true' and 'false'
 
 ######################################
@@ -60,20 +60,13 @@ internet_gateway_name = "Cisco_ISE_IGW"                  # Name tag for the Inte
     }
   }
   
-   Usage example - 
-   primary_instance_config = { 
-    primary-ise-server = { 
-      instance_type = "t3.xlarge"
-      storage_size = 600 
-      }
-    }
    */
 
 # NOTE: Hostname only supports alphanumeric characters and hyphen (-). The length of the hostname should not exceed 19 characters, otherwise deployment will fail
 # Example: Below primary-ise-server is a dynamic hostname provided by user.
 primary_instance_config = {
-  primary-ise-server = {
-    instance_type = "m5.4xlarge"
+  alei-perf-eu-1 = {
+    instance_type = "m5.8xlarge"
     storage_size  = 500
   }
 }
@@ -90,25 +83,17 @@ primary_instance_config = {
       roles = "<role_1>,<role_2>"
     }
   }
-  Example usage -
-  secondary_instance_config = {
-  secondary-ise-server = {
-    instance_type = "t3.xlarge"
-    storage_size  = 500
-    services      = "Session,Profiler,pxGrid"
-    roles         = "SecondaryAdmin"
-  }
-}
+
 */
 
 # NOTE: Hostname only supports alphanumeric characters and hyphen (-). The length of the hostname should not exceed 19 characters, otherwise deployment will fail
 # Example: Below sec-ise-server is a dynamic hostname provided by user.
 secondary_instance_config = {
-  sec-ise-server = {
-    instance_type = "t3.xlarge"
+  alei-perf-eu-2 = {
+    instance_type = "m5.8xlarge"
     storage_size  = 500
     services      = "Session,Profiler,pxGrid"
-    roles         = "SecondaryAdmin"
+    roles         = "SecondaryAdmin,SecondaryMonitoring"
   }
 }
 
@@ -123,50 +108,36 @@ secondary_instance_config = {
       roles = "<role_1>,<role_2>"
     }
   }
-  
-Please use below example for the reference.
 
-  psn_instance_config = {
-    secmonitoring-server = {
-      instance_type = "m5.2xlarge"
-      storage_size  = 500
-      roles = "SecondaryDedicatedMonitoring"
-    }
-    psn-ise-server-2 = {
-      instance_type = "t3.xlarge"
-      storage_size  = 600
-      services      = "Session,Profiler,PassiveIdentity"
-    }
-    psn-ise-server-3 = {
-      instance_type = "c5.4xlarge"
-      storage_size  = 700
-    }
-}
 */
 
 # NOTE: Hostname only supports alphanumeric characters and hyphen (-). The length of the hostname should not exceed 19 characters, otherwise deployment will fail
 # Example: Below secmon-server, psn-ise-server-2 and so on are the dynamic hostname provided by user.
 psn_instance_config = {
-  secmon-server = {
-    instance_type = "m5.2xlarge"
-    storage_size  = 500
-    roles         = "SecondaryMonitoring"
-  }
-  psn-ise-server-2 = {
-    instance_type = "t3.xlarge"
-    storage_size  = 600
-    services      = "Session,Profiler,PassiveIdentity"
-
-  }
-  psn-ise-server-3 = {
-    instance_type = "t3.xlarge"
-    storage_size  = 700
-    services      = "Session,Profiler"
-  }
+    alei-perf-eu-3 = {
+      instance_type = "m5.2xlarge"
+      storage_size  = 500
+      services      = "Session,Profiler"
+    }
+    alei-perf-eu-4 = {
+      instance_type = "m5.2xlarge"
+      storage_size  = 500
+      services      = "Session,Profiler"
+    }
+    alei-perf-eu-5 = {
+      instance_type = "m5.2xlarge"
+      storage_size  = 500
+      services      = "Session,Profiler"
+    }
+    alei-perf-eu-6 = {
+      instance_type = "m5.2xlarge"
+      storage_size  = 500
+      services      = "Session,Profiler"
+    }
 }
 
 ### User needs to create a keypair and pass the key pair name
-key_pair_name = "ise-test-nv" # Name of the key pair for SSH access
+key_pair_name = "alei-key-eu" # Name of the key pair for SSH access
 
 ###Storage Details###
 ebs_encrypt = false # Choose true to enable EBS encryption
@@ -175,7 +146,7 @@ ebs_encrypt = false # Choose true to enable EBS encryption
 enable_stickiness = true # Choose true to enable stickiness for the load balancer
 
 # Application Details
-ise_version       = "3.1"             # The version of Cisco ISE (3.1 or 3.2 or 3.3)
+ise_version       = "3.3"             # The version of Cisco ISE (3.1 or 3.2 or 3.3)
 password          = "C!sc0Ind1@"      # Set a password for GUI-based login to Cisco ISE. The password that you enter must comply with the Cisco ISE password policy. The password must contain 6 to 25 characters and include at least one numeral, one uppercase letter, and one lowercase letter. The password cannot be the same as the username or its reverse (iseadmin or nimdaesi), cisco, or ocsic. The allowed special characters are @~*!,+=_-.
 time_zone         = "UTC"             # Enter a timezone that is allowed by ISE nodes. For information on the supported timezone formats, refer to this documentation - https://www.cisco.com/c/en/us/td/docs/security/ise/3-3/cli_guide/b_ise_CLI_Reference_Guide_33/b_ise_CLIReferenceGuide_33_chapter_011.html?#wp2884933107
 ers_api           = "yes"             # Enable/disable ERS
